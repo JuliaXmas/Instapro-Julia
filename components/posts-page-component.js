@@ -3,7 +3,7 @@ import { renderHeaderComponent } from "./header-component.js";
 import { goToPage, user as authorizedUser } from "../index.js";
 import { addLike, removeLike } from "../api.js";
 import { getToken } from "../index.js";
-import { sanitizeHtml } from "./sanitize-html.js";
+import { sanitizeHtml } from "../sanitizeHtml.js";
 
 export function renderPostsPageComponent({
   appEl,
