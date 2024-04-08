@@ -3,6 +3,7 @@ import { renderHeaderComponent } from "./header-component.js";
 import { goToPage, user as authorizedUser } from "../index.js";
 import { addLike, removeLike } from "../api.js";
 import { getToken } from "../index.js";
+import { sanitizeHtml } from "./sanitize-html.js";
 
 export function renderPostsPageComponent({
   appEl,
@@ -75,7 +76,7 @@ export function renderPostsPageComponent({
                   </div>
                   <p class="post-text">
                     <span class="user-name">${user.name}</span>
-                    ${description}
+                    ${sanitizeHtml(description)}
                   </p>
                   <p class="post-date">
                   ${dateFns.formatDistanceToNow(createdAt)}
