@@ -20,6 +20,7 @@ export function renderHeaderComponent({ element }) {
     </div>
   `;
 
+
   element
     .querySelector(".add-or-login-button")
     .addEventListener("click", () => {

@@ -1,8 +1,9 @@
 import { renderUploadImageComponent } from "./upload-image-component.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { getToken } from "../index.js";
+import { getToken } from '../index.js'
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
+
   const render = () => {
     const appHtml = `
     <div class="page-container">
@@ -39,6 +40,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     });
 
     document.getElementById("add-button").addEventListener("click", () => {
+
       const description = document.getElementById("description")?.value;
 
       if (!description) {

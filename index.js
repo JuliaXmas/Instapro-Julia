@@ -32,30 +32,32 @@ export const logout = () => {
 };
 
 const handleGetPosts = (data = {}) => {
-  if (data?.userId) {
-    return getUserPosts({ userId: data.userId })
-      .then((newPosts) => {
-        page = USER_POSTS_PAGE;
-        posts = newPosts;
-        renderApp();
-      })
-      .catch((error) => {
-        console.error(error);
-        goToPage(USER_POSTS_PAGE, data);
-      });
-  }
 
-  return getPosts()
+  if ( data?.userId ) {
+    return getUserPosts({userId: data.userId})
     .then((newPosts) => {
-      page = POSTS_PAGE;
+      page = USER_POSTS_PAGE;
       posts = newPosts;
       renderApp();
     })
     .catch((error) => {
       console.error(error);
-      goToPage(POSTS_PAGE);
+      goToPage(USER_POSTS_PAGE, data);
     });
-};
+
+  }
+
+  return getPosts()
+  .then((newPosts) => {
+    page = POSTS_PAGE;
+    posts = newPosts;
+    renderApp();
+  })
+  .catch((error) => {
+    console.error(error);
+    goToPage(POSTS_PAGE);
+  });
+}
 
 /**
  * Включает страницу приложения
@@ -79,12 +81,12 @@ export const goToPage = (newPage, data) => {
     if (newPage === POSTS_PAGE) {
       page = LOADING_PAGE;
       renderApp();
-      handleGetPosts();
+      handleGetPosts()
     }
 
     if (newPage === USER_POSTS_PAGE) {
       page = USER_POSTS_PAGE;
-      handleGetPosts(data);
+      handleGetPosts(data)
     }
 
     page = newPage;
@@ -123,31 +125,32 @@ const renderApp = () => {
     return renderAddPostPageComponent({
       appEl,
       onAddPostClick(data) {
-        createPost(data).then((response) => {
+        createPost(data)
+        .then((response) => {
           if (response.status === 401) {
             goToPage(AUTH_PAGE);
           } else {
             goToPage(POSTS_PAGE);
           }
-        });
+        })
       },
     });
   }
 
   if (page === POSTS_PAGE) {
     return renderPostsPageComponent({
-      appEl,
-      posts,
-      onPostsChange: () => handleGetPosts(),
+      appEl, 
+      posts, 
+      onPostsChange: () => handleGetPosts()
     });
   }
 
   if (page === USER_POSTS_PAGE) {
     return renderPostsPageComponent({
-      appEl,
-      posts,
-      onPostsChange: ({ user }) => handleGetPosts({ userId: user.id }),
-    });
+      appEl, 
+      posts, 
+      onPostsChange: ({ user }) => handleGetPosts({userId: user.id})
+    })
   }
 };
 

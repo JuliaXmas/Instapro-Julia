@@ -4,28 +4,26 @@ import { goToPage, user as authorizedUser } from "../index.js";
 import { addLike, removeLike } from "../api.js";
 import { getToken } from "../index.js";
 
-export function renderPostsPageComponent({
-  appEl,
-  posts = [],
-  onPostsChange = () => {},
-}) {
+export function renderPostsPageComponent({ appEl, posts = [], onPostsChange = () => {} }) {
+
+
   const handleCheckIsLiked = (isLiked, array = [], userName) => {
     //Костыль, потому что бек работает некорректно
     if (isLiked) {
       return true;
     }
-    return array.map(({ name }) => name).includes(userName);
-  };
+    return array.map(({name}) => name).includes(userName)
+  }
 
   const getLikeList = (array) => {
     if (!!array?.length) {
       if (array.length > 1) {
-        return `${array[0]?.name} и еще ${array.length - 1}`;
+        return `${array[0]?.name} и еще ${array.length - 1}`
       }
-      return `${array[0]?.name}`;
+      return `${array[0]?.name}`
     }
-    return "";
-  };
+    return ''
+  }
 
   const render = () => {
     const appHtml = `
@@ -33,41 +31,29 @@ export function renderPostsPageComponent({
         <div class="header-container"></div>
         <ul class="posts">
         ${
-          posts?.length === 0
-            ? "Список постов пуст"
-            : posts
-                .map(
-                  ({
-                    createdAt,
-                    description,
-                    imageUrl,
-                    likes,
-                    isLiked,
-                    user,
-                    id,
-                  }) =>
-                    `
+          posts?.length === 0 
+          ? 'Список постов пуст' 
+          : posts.map(({
+              createdAt,
+              description,
+              imageUrl,
+              likes,
+              isLiked,
+              user,
+              id,
+            }) => (
+              `
                 <li class="post">
                   <div class="post-header" data-user-id="${user.id}">
-                      <img src="${
-                        user.imageUrl
-                      }" class="post-header__user-image">
+                      <img src="${user.imageUrl}" class="post-header__user-image">
                       <p class="post-header__user-name">${user.name}</p>
                   </div>
                   <div class="post-image-container">
                     <img class="post-image" src="${imageUrl}">
                   </div>
                   <div class="post-likes">
-                    <button data-post-id="${id}" data-is-liked="${handleCheckIsLiked(
-                      isLiked,
-                      likes,
-                      authorizedUser.name
-                    )}" class="like-button">
-                      <img src="./assets/images/like${
-                        handleCheckIsLiked(isLiked, likes, authorizedUser.name)
-                          ? ""
-                          : "-not"
-                      }-active.svg">
+                    <button data-post-id="${id}" data-is-liked="${handleCheckIsLiked(isLiked, likes, authorizedUser.name)}" class="like-button">
+                      <img src="./assets/images/like${handleCheckIsLiked(isLiked, likes, authorizedUser.name) ? "" : "-not"}-active.svg">
                     </button>
                     <p class="post-likes-text">
                       Нравится: <strong>${getLikeList(likes)}</strong>
@@ -82,13 +68,12 @@ export function renderPostsPageComponent({
                   </p>
                 </li>
               `
-                )
-                .join("")
+            )).join("")
         }
         </ul>
       </div>
     `;
-
+    
     appEl.innerHTML = appHtml;
 
     renderHeaderComponent({
@@ -102,27 +87,28 @@ export function renderPostsPageComponent({
         });
       });
     }
+  
+    for (let likeButtonElement of document.querySelectorAll('.like-button')) {
+      likeButtonElement.addEventListener('click', (event) => {
 
-    for (let likeButtonElement of document.querySelectorAll(".like-button")) {
-      likeButtonElement.addEventListener("click", (event) => {
         event.stopPropagation();
-
+        
         if (!authorizedUser) {
-          alert("Пожалуйста, зарегестрируйтесь или войдите в аккаунт");
+          alert('Пожалуйста, зарегестрируйтесь или войдите в аккаунт');
           return;
         }
+        
+        const postId = likeButtonElement.dataset.postId
+        const token = getToken()
 
-        const postId = likeButtonElement.dataset.postId;
-        const token = getToken();
-
-        if (likeButtonElement.dataset.isLiked === "true") {
-          removeLike({ token, postId }).then(({ post }) => onPostsChange(post));
+        if ( likeButtonElement.dataset.isLiked === 'true' ) {
+          removeLike({ token, postId }).then(({ post }) => onPostsChange(post))
         } else {
-          addLike({ token, postId }).then(({ post }) => onPostsChange(post));
+          addLike({ token, postId }).then(({ post }) => onPostsChange(post))
         }
       });
     }
-  };
+  }
 
   render();
 }
